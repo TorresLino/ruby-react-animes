@@ -12,7 +12,7 @@ class Anime{
     constructor(
             id, title, description, episodes, episodeDuration,
             rating, premiered, status_id, slug){
-        this.setId(id);
+        this.#setId(id);
         this.setTitle(title);
         this.setDescription(description);
         this.setEpisodes(episodes);
@@ -34,7 +34,7 @@ class Anime{
         )
     }
 
-    setId(id) { this.#id = parseInt(id); }
+    #setId(id) { this.#id = parseInt(id); }
     setTitle(title) { this.#title = title; }
     setDescription(description) { this.#description = description; }
     setEpisodes(episodes) { this.#episodes = parseInt(episodes); }

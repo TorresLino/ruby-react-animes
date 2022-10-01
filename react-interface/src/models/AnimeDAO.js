@@ -1,5 +1,6 @@
 import { AbstractDAO } from './AbstractDAO.js'
 import { Anime } from './Anime.js'
+import axios from 'axios';
 
 class AnimeDAO extends AbstractDAO{
     constructor(){
@@ -7,35 +8,32 @@ class AnimeDAO extends AbstractDAO{
     }
 
     async fetchAll(){
-        this.allObjects = []
-        await super.fetchAll();
-        for(var a of this.responseData){
-            this.allObjects.push(
-                new Anime(a['id'], a['title'], a['description'],
-                        a['episodes'], a['episodeDuration'], a['rating'],
-                        a['premiered'], a['status_id'], a['slug']));
-        }
+        var animes = (await super.fetchAll()).data.map(a => 
+            new Anime(a['id'], a['title'], a['description'],
+                a['episodes'], a['episodeDuration'], a['rating'],
+                a['premiered'], a['status_id'], a['slug'])
+            );
+        return animes;
     }
 
     async fetch(id){
-        await super.fetch(id);
-        var a = this.responseData;
-        this.object = 
-            new Anime(a['id'], a['title'], a['description'],
+        
+        var a = (await super.fetch(id)).data;
+        return new Anime(a['id'], a['title'], a['description'],
                 a['episodes'], a['episodeDuration'], a['rating'],
                 a['premiered'], a['status_id'], a['slug']);
     }
 
-    async create(){
-        await super.create();
+    create(object){
+        return super.create(object);
     }
 
-    async update(){
-        await super.update();
+    update(object){
+        return super.update(object);
     }
 
-    async delete(){
-        await super.delete();
+    delete(id){
+        return super.delete(id);
     }
 }
 

@@ -7,18 +7,14 @@ class StatusDAO extends AbstractDAO{
     }
 
     async fetchAll(){
-        this.allObjects = []
-        await super.fetchAll();
-        for(var s of this.responseData){
-            this.allObjects.push(
-                new Status(s['id'], s['name']));
-        }
+        var statuses = (await super.fetchAll()).data.map(s => 
+            new Status(s['id'], s['name']));
+        return statuses;
     }
 
     async fetch(id){
-        await super.fetch(id);
-        var s = this.responseData;
-        this.object = new Status(s['id'], s['name']);
+        var s = (await super.fetch(id)).data;
+        return new Status(s['id'], s['name']);
     }
 
     async create(){
@@ -35,9 +31,3 @@ class StatusDAO extends AbstractDAO{
 }
 
 export { StatusDAO };
-
-var sdao = new StatusDAO();
-await sdao.fetchAll()
-await sdao.fetch(2)
-console.log(sdao.allObjects.map(o => o.toObject()))
-console.log(sdao.object.toObject())

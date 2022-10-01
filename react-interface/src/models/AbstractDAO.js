@@ -1,9 +1,6 @@
 import axios from 'axios';
 
 class AbstractDAO{
-    object;
-    allObjects = [];
-    responseData;
     api_url;
 
     constructor(api_url){
@@ -13,34 +10,20 @@ class AbstractDAO{
         }
     }
 
-    async fetchAll(){
-        this.responseData = (await axios.get(this.api_url)).data;
+    fetchAll(){
+        return axios.get(this.api_url);
     }
-
-    //the following methods perform CRUD operations based     
-    //on the this.object attribute
-    async fetch(id){
-        this.responseData = (await axios.get(this.api_url + '/' + id)).data;
+    fetch(id){
+        return axios.get(this.api_url + '/' + id);
     }
-    async create(){
-        this.responseData = await axios.post(this.api_url, this.object.toObject());
+    create(object){
+        return axios.post(this.api_url, object.toObject());
     }
-    async update(){
-        this.responseData = await axios.put(this.api_url + '/' + this.object.getId(), 
-            this.object.toObject());
+    update(object){
+        return axios.put(this.api_url + '/' + object.getId(), object.toObject());
     }
-    async delete(){
-        this.responseData = await axios.delete(this.api_url + '/' + this.object.getId());
-    }
-    
-    getObject(){
-        return this.object;
-    }
-    getAll(){
-        return this.allObjects;
-    }
-    setObject(object){
-        this.object = object;
+    delete(id){
+        return axios.delete(this.api_url + '/' + id);
     }
 }
 export { AbstractDAO };
