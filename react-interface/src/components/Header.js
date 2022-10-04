@@ -10,7 +10,7 @@ const Header = () => {
             <Container>
                 <Navbar.Brand href='#home'>Anime List</Navbar.Brand>
                 <Nav className='me-auto'>
-                    <NavLink href='#home'>Home</NavLink>
+                    <NavLink href='/'>Home</NavLink>
                 </Nav>
             </Container>
         </Navbar>

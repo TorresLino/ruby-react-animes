@@ -1,6 +1,5 @@
 import { AbstractDAO } from './AbstractDAO.js'
 import { Anime } from './Anime.js'
-import axios from 'axios';
 
 class AnimeDAO extends AbstractDAO{
     constructor(){

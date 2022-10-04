@@ -1,26 +1,44 @@
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { AnimeDAO } from './models/AnimeDAO.js'
-import { Anime } from './models/Anime.js'
-import { Status } from './models/Status'
+import { StatusDAO } from './models/StatusDAO.js'
 import Header from './components/Header'
+import Search from './components/Search'
 import { useEffect, useState } from 'react'
 import StatusFilterCheckbox from './components/StatusFilterCheckbox'
 
-var loaded_animes = [
-  new Anime(1, 'MiA', 'children', 13, 25, 10, '2017-01-01', 2, 'mia'),
-  new Anime(1, 'Beastars', 'furry', 12, 24, 9, '2019-01-01', 1, 'bst'),
-  new Anime(1, 'AoT', 'food', 24, 23, 8, '2016-01-01', 1, 'aot')
-]
-var statuses = [
-  new Status(1, 'watched'), new Status(2, 'watching')
-]
-var enabled_filters = new Set(statuses.map(s => s.getId()))
+var animeDAO = new AnimeDAO()
+var statusDAO = new StatusDAO()
+var enabled_filters
+var search = ""
 
-function App() {  
+
+function App() {
+  var [statuses, setStatuses] = useState([])
+  var [loaded_animes, setLoadedAnimes] = useState([])
+  var [display_animes, setDispAnimes] = useState([])
+
+  useEffect(() => {
+    loadData()
+  }, []);
+
+  useEffect(() => {
+    if(enabled_filters !== undefined)
+      onChangeDisplayConditions()
+  }, [statuses, loaded_animes])
+
+  const loadData = () => {
+    statusDAO.fetchAll().then((res) => { 
+      setStatuses(res)      
+      enabled_filters = new Set(res.map(s => s.getId()))
+    })    
+    animeDAO.fetchAll().then((res) => { setLoadedAnimes(res) })
+  }
+
   const onChangeDisplayConditions = () => {
-    console.log(enabled_filters)
-    setAnimes(loaded_animes.filter(a => (enabled_filters.has(a.getStatusId()))))
+    let filteredAnimes = loaded_animes.filter(a => (enabled_filters.has(a.getStatusId())));
+    filteredAnimes = filteredAnimes.filter(a => (a.getTitle().toLowerCase().includes(search) || search == ""))
+    setDispAnimes(filteredAnimes)
   }
   
   const onFilterChange = event => {
@@ -29,17 +47,24 @@ function App() {
     } else {
       enabled_filters.delete(parseInt(event.target.id))
     }
-    onChangeDisplayConditions();
+    onChangeDisplayConditions(loaded_animes)
   }
-  var [animes, setAnimes] = useState([])
+
+  const onSerchChange = event => {
+    search = event.target.value.toLowerCase()
+    onChangeDisplayConditions()
+  }
 
   return (
     <div className="App">
       <Header />
+      <Search serchChangeEvent={onSerchChange} />
       { statuses.map((s) => { return (
       <StatusFilterCheckbox key={s.getId()} status={s} onSelectionChange={onFilterChange} />
       )})}
-      {animes.map(a => a.getTitle())}
+      <ul style={{maxWidth: "500px"}}>        
+        {display_animes.map(a => {return <li key={a.getId()}>{a.getTitle()}</li>})}
+      </ul>
     </div>
   )
 }
