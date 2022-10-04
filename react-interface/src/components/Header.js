@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar'
 
 const Header = () => {
   return (
-    <header>
+    <header style={{width: "100%"}}>
         <Navbar bg='dark' variant='dark'>
             <Container>
                 <Navbar.Brand href='#home'>Anime List</Navbar.Brand>

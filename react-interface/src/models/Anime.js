@@ -50,7 +50,7 @@ class Anime{
     getEpisodes() { return this.#episodes }
     getEpisodeDuration() { return this.#episodeDuration }
     getRating() { return this.#rating }
-    getPremiered() { return this.#premiered }
+    getPremiered() { return this.#premiered.toISOString().split('T')[0] }
     getStatusId() { return this.#status_id }
     getSlug() { return this.#slug }
 }

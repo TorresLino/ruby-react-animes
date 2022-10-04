@@ -4,8 +4,12 @@ import { AnimeDAO } from './models/AnimeDAO.js'
 import { StatusDAO } from './models/StatusDAO.js'
 import Header from './components/Header'
 import Search from './components/Search'
+import AnimeDisplay from './components/AnimeDisplay'
 import { useEffect, useState } from 'react'
 import StatusFilterCheckbox from './components/StatusFilterCheckbox'
+import Container from 'react-bootstrap/Container'
+import Col from 'react-bootstrap/esm/Col'
+import Row from 'react-bootstrap/esm/Row'
 
 var animeDAO = new AnimeDAO()
 var statusDAO = new StatusDAO()
@@ -56,15 +60,31 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="App" style={{display: "flex", flexDirection: "column",
+      alignItems: "center", width: '100%'}}>
       <Header />
-      <Search serchChangeEvent={onSerchChange} />
-      { statuses.map((s) => { return (
-      <StatusFilterCheckbox key={s.getId()} status={s} onSelectionChange={onFilterChange} />
-      )})}
-      <ul style={{maxWidth: "500px"}}>        
-        {display_animes.map(a => {return <li key={a.getId()}>{a.getTitle()}</li>})}
-      </ul>
+
+      <main style={{maxWidth: "1000px", width: "80%", marginLeft: "10%",
+        marginRight: "10%", paddingTop: '50px', paddingBottom: '100px'}}>
+
+        <h1 className='text-start mb-5'>
+          Anime List
+        </h1>
+
+        <Search serchChangeEvent={onSerchChange} />
+
+        <Container className='text-start my-3'>
+          <Row>
+            { statuses.map((s) => { return (
+            <Col>
+              <StatusFilterCheckbox key={s.getId()} status={s} onSelectionChange={onFilterChange} />
+            </Col>
+            )})}
+          </Row>
+        </Container>
+        
+        { display_animes.map(a => { return (<AnimeDisplay key={a.getId()} anime={a} statuses={statuses} />)}) }
+      </main>
     </div>
   )
 }
